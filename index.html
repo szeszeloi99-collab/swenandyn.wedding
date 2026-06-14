@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shan Wen & Yung Ning — 19 June 2026</title>
+<title>Shan Wen & Yung Ning — 19 September 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -285,6 +285,7 @@
     background: radial-gradient(ellipse at top left, rgba(201,144,106,0.1), transparent 65%);
     opacity: 0;
     transition: opacity 0.4s;
+    pointer-events: none;
   }
 
   .event-card:hover {
@@ -345,6 +346,39 @@
     opacity: 0.04;
     pointer-events: none;
     line-height: 1;
+  }
+
+  /* ── Inline map / waze quick-launch icons ── */
+  .map-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .map-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.04);
+    transition: transform .25s, border-color .25s, background .25s, box-shadow .25s;
+  }
+
+  .map-icon-btn:hover {
+    transform: translateY(-3px);
+    border-color: rgba(201,144,106,0.6);
+    background: rgba(201,144,106,0.08);
+    box-shadow: 0 10px 24px rgba(201,144,106,0.2);
+  }
+
+  .map-icon-btn img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
   }
 
   /* ── RSVP ── */
@@ -560,15 +594,12 @@
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     .section { padding: 60px 16px; }
-
-    /* Keep 2-column events grid same as desktop */
     .events-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
     .event-card { padding: 26px 18px; }
     .event-name { font-size: 1.2rem; }
     .event-icon { font-size: 1.8rem; margin-bottom: 12px; }
     .event-detail span { font-size: 0.78rem; }
 
-    /* Keep 3-column asymmetric gallery same as desktop */
     .gallery { grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .gallery-item:nth-child(1) { grid-column: span 2; height: 200px; }
     .gallery-item:nth-child(2) { height: 200px; }
@@ -578,15 +609,12 @@
     .gallery-item:nth-child(6) { grid-column: span 2; height: 140px; }
 
     .rsvp-box { padding: 30px 20px; }
-
     .hero-names { font-size: clamp(3rem, 13vw, 5rem); }
     .section-title { font-size: clamp(1.6rem, 6vw, 2.4rem); }
   }
 
   @media (max-width: 480px) {
     .section { padding: 50px 14px; }
-
-    /* Still keep 2-column events on small phones */
     .events-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .event-card { padding: 20px 14px; }
     .event-name { font-size: 1rem; }
@@ -594,7 +622,9 @@
     .event-label { font-size: 0.55rem; }
     .event-detail span { font-size: 0.72rem; }
 
-    /* Still keep 3-column gallery on small phones */
+    .map-icon-btn { width: 42px; height: 42px; }
+    .map-icon-btn img { width: 23px; height: 23px; }
+
     .gallery { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .gallery-item:nth-child(1) { grid-column: span 2; height: 150px; }
     .gallery-item:nth-child(2) { height: 150px; }
@@ -614,33 +644,242 @@
     .hero-date, .hero-subtitle, .hero-scroll { animation: none !important; opacity: 1 !important; transform: none !important; }
   }
 
-
-
   /* Stylized floating music button */
-        .music-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #dd9cb7;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            box-shadow: 0 4px 6px rgba(116, 28, 47, 0.1);
-            transition: background-color 0.3s ease;
-            z-index: 1000;
-        }
-        .music-btn:hover {
-            background-color: #555;
-        }
+  .music-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #dd9cb7;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      box-shadow: 0 4px 6px rgba(116, 28, 47, 0.1);
+      transition: background-color 0.3s ease;
+      z-index: 1000;
+  }
+  .music-btn:hover {
+      background-color: #555;
+  }
+
+  .location-link{
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      border-bottom: 1px dashed rgba(201,144,106,0.6);
+      transition: .3s;
+  }
+
+  .location-link:hover{
+      opacity: .8;
+      border-bottom-color: var(--gold);
+  }
+
+  /* ── MAP MODAL ── */
+  .map-modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: .35s ease;
+  }
+
+  .map-modal.show{
+      opacity: 1;
+      visibility: visible;
+  }
+
+  .map-modal-content{
+      width: 90%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px;
+      position: relative;
+      animation: popup .35s ease;
+  }
+
+  @keyframes popup{
+      from{ transform: translateY(20px) scale(.95); opacity:0; }
+      to{ transform: translateY(0) scale(1); opacity:1; }
+  }
+
+  .map-close{
+      position:absolute;
+      top:12px;
+      right:12px;
+      width:36px;
+      height:36px;
+      border:none;
+      border-radius:50%;
+      background:#f3f3f3;
+      cursor:pointer;
+      font-size:16px;
+  }
+
+  .map-header{
+      text-align:center;
+      margin-bottom:24px;
+  }
+
+  .map-icon{
+      font-size:42px;
+      margin-bottom:10px;
+  }
+
+  .map-header h3{ margin:0; font-size:22px; color:#222; }
+  .map-header p{ margin-top:8px; color:#666; font-size:14px; }
+  .map-buttons{ display:flex; flex-direction:column; gap:12px; }
+
+  .map-btn{
+      display:flex;
+      align-items:center;
+      gap:15px;
+      padding:16px;
+      border-radius:16px;
+      text-decoration:none;
+      color:#222;
+      transition:.25s;
+  }
+
+  .map-btn span{ font-size:28px; }
+  .map-btn-icon{ width:30px; height:30px; object-fit:contain; flex-shrink:0; }
+  .map-btn div{ display:flex; flex-direction:column; }
+  .map-btn small{ color:#777; }
+  .google{ background:#f5f8ff; }
+  .google:hover{ transform:translateY(-2px); }
+  .waze{ background:#eefcff; }
+  .waze:hover{ transform:translateY(-2px); }
+  .apple{ background:#f8f8f8; }
+  .apple:hover{ transform:translateY(-2px); }
+
+  @media(max-width:430px){
+      .map-modal-content{ width:92%; padding:24px; }
+      .map-btn{ padding:14px; }
+  }
+
+  /* ── INVITATION CARD & NEW ZOOM FEATURE ── */
+  .invite-card {
+    display: block;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+    cursor: zoom-in; /* 提示可以点击放大 */
+    transition: transform 0.3s ease;
+  }
+  
+  .invite-card:hover {
+    transform: scale(1.02);
+  }
+
+  /* ── LIGHTBOX OVERLAY ── */
+  .lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 4, 8, 0.95);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    overflow: hidden;
+  }
+
+  .lightbox-overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .lightbox-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: auto; /* 允许大图滚动 */
+  }
+
+  .lightbox-img {
+    max-width: 90%;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    transition: transform 0.25s cubic-bezier(0.1, 0.5, 0.1, 1);
+    transform-origin: center center;
+    cursor: zoom-out;
+  }
+
+  /* 放大状态下的样式 */
+  .lightbox-img.zoomed {
+    max-width: none;
+    max-height: none;
+    cursor: grab;
+  }
+  
+  .lightbox-img.zoomed:active {
+    cursor: grabbing;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, transform 0.3s;
+    z-index: 10002;
+  }
+
+  .lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
+  }
+
+  .zoom-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.6);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--text);
+    letter-spacing: 1px;
+    pointer-events: none;
+    z-index: 10001;
+    border: 1px solid var(--border);
+  }
 </style>
 </head>
 <body>
-
-
 
 <!-- ── HERO ── -->
 <section class="hero">
@@ -648,17 +887,17 @@
   <div class="petals" id="petals"></div>
 
   <div class="hero-content">
-    <p class="hero-eyebrow">You are cordially invited</p>
+    <p class="hero-eyebrow">You are cordially invited<br>•诚挚邀请您共庆•</p>
     <h1 class="hero-names">
       Shan Wen <span class="hero-ampersand">&</span> Yung Ning
     </h1>
     <div class="hero-divider"></div>
-    <p class="hero-date">Saturday, 19 June 2026</p>
-    <p class="hero-subtitle">We're getting married</p>
+    <p class="hero-date">Friday, 18 September 2026 & <br>Saturday, 19 September 2026</p>
+    <p class="hero-subtitle">We're getting married <br>我们结婚啦！</p>
   </div>
 
   <div class="hero-scroll">
-    <span>Scroll</span>
+    <span>Scroll 下拉查看</span>
     <div class="scroll-line"></div>
   </div>
 </section>
@@ -666,8 +905,8 @@
 <!-- ── OUR STORY ── -->
 <div class="story-wrap">
   <div class="section">
-    <p class="section-eyebrow reveal">Our Story</p>
-    <h2 class="section-title reveal reveal-delay-1">A Love Worth <em>Celebrating</em></h2>
+    <p class="section-eyebrow reveal">Our Moments 风雨同舟∞韶华共赏♡</p>
+    <h2 class="section-title reveal reveal-delay-1">A Love Worth <em>Celebrating</em> <br>永结同心 ღ 喜乐同庆</h2>
     <div class="section-rule reveal reveal-delay-2"></div>
 
     <div class="gallery">
@@ -682,20 +921,31 @@
 <!-- ── EVENTS ── -->
 <div class="events-wrap">
   <div class="section">
-    <p class="section-eyebrow reveal">Join Us</p>
-    <h2 class="section-title reveal reveal-delay-1">Wedding <em>Events</em></h2>
+    <p class="section-eyebrow reveal">Join Us 共赴良辰</p>
+    <h2 class="section-title reveal reveal-delay-1">Wedding <em>Events</em><br>活动详情</h2>
     <div class="section-rule reveal reveal-delay-2"></div>
 
     <div class="events-grid">
-
       <div class="event-card reveal reveal-delay-2">
         <span class="event-icon">🥂</span>
         <p class="event-label">Night before</p>
-        <h3 class="event-name">Evening Party</h3>
+        <h3 class="event-name">Evening Party 派对</h3>
         <div class="event-detail">
-          <span><strong>18 June 2026</strong></span>
-          <span>7:00 PM onwards</span>
-          <span>Smart casual attire</span>
+          <span><strong>📍 Wen's Home, Serdang</strong></span>
+          <span>18 September 2026 (FRI), <br>⏰ 7:00 PM onwards</span>
+          <span>👔 Smart casual attire <br>盛装出席，亦享舒适</span>
+          <div class="map-icons">
+            <a href="https://maps.google.com/?q=No 3, Jalan Indah 2/15, Taman Universiti Indah, 43300 Seri Kembangan, Selangor"
+               target="_blank" rel="noopener"
+               class="map-icon-btn" aria-label="Open location in Google Maps">
+              <img src="map.png" alt="Google Maps">
+            </a>
+            <a href="https://waze.com/ul?q=No 3, Jalan Indah 2/15, Taman Universiti Indah, 43300 Seri Kembangan, Selangor&navigate=yes"
+               target="_blank" rel="noopener"
+               class="map-icon-btn" aria-label="Open location in Waze">
+              <img src="waze.png" alt="Waze">
+            </a>
+          </div>
         </div>
         <div class="event-card-deco">🥂</div>
       </div>
@@ -703,66 +953,98 @@
       <div class="event-card reveal reveal-delay-3">
         <span class="event-icon">💍</span>
         <p class="event-label">The big day</p>
-        <h3 class="event-name">Wedding Dinner</h3>
+        <h3 class="event-name">Wedding Dinner 晚宴</h3>
         <div class="event-detail">
-          <span><strong>19 June 2026</strong></span>
-          <span>6:00 PM</span>
-          <span>Formal / black tie</span>
+          <span>
+            <strong>
+              <a href="#" onclick="openMapModal(); return false;" class="location-link">
+                📍 Hee Lai Ton Restaurant 喜来登, Serdang</strong> <br>【 Click To Navigate 点击导航】
+              </a>
+          </span>
+          <span>19 September 2026 (SAT), <br>⏰ 6:00 PM</span>
+          <span>🤵 Formal / black tie <br>盛装赴良辰，华服共今朝</span>
+
+          <div class="map-icons">
+            <a href="https://maps.google.com/?q=Hee+Lai+Ton+Restaurant+Serdang"
+               target="_blank" rel="noopener"
+               class="map-icon-btn" aria-label="Open location in Google Maps">
+              <img src="map.png" alt="Google Maps">
+            </a>
+            <a href="https://waze.com/ul?q=Hee+Lai+Ton+Restaurant+Serdang&navigate=yes"
+               target="_blank" rel="noopener"
+               class="map-icon-btn" aria-label="Open location in Waze">
+              <img src="waze.png" alt="Waze">
+            </a>
+             <a href="https://maps.apple.com/?q=Hee+Lai+Ton+Restaurant+Serdang"
+               target="_blank" rel="noopener"
+               class="map-icon-btn" aria-label="Apple Maps">
+              <img src="apple.png" alt="">
+            </a>
+          </div>
         </div>
         <div class="event-card-deco">💍</div>
       </div>
-
     </div>
+  </div>
+</div>
+
+<!-- ── INVITATION CARD ── -->
+<div class="events-wrap">
+  <div class="section">
+    <p class="section-eyebrow reveal">Wedding Dinner 婚礼晚宴</p>
+    <h2 class="section-title reveal reveal-delay-1">Our <em>Invitation</em><br>邀请函</h2>
+    <div class="section-rule reveal reveal-delay-2"></div>
+
+    <!-- 添加了点击事件打开弹窗 -->
+    <img src="card.png" alt="Wedding Invitation Card" class="invite-card reveal reveal-delay-2" onclick="openLightbox(this.src)">
   </div>
 </div>
 
 <!-- ── RSVP ── -->
 <div class="rsvp-wrap">
   <div class="section">
-    <p class="section-eyebrow reveal">Kindly Reply</p>
-    <h2 class="section-title reveal reveal-delay-1">Will You <em>Join Us?</em></h2>
+    <p class="section-eyebrow reveal">Kindly Reply 请回复</p>
+    <h2 class="section-title reveal reveal-delay-1">同心永契，岁月成诗；<br>今设佳宴，邀您共庆。<br><br>Will You <em>Join Us?</em></h2>
     <div class="section-rule reveal reveal-delay-2"></div>
 
     <div class="rsvp-box reveal reveal-delay-2">
       <form id="rsvpForm">
-
         <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" name="name" placeholder="Your full name" required>
+          <label>Full Name 全名</label>
+          <input type="text" name="name" placeholder="Your full name 您的全名" required>
         </div>
 
         <div class="form-group">
-          <label>Phone Number</label>
+          <label>Phone Number 联系号码</label>
           <input type="tel" name="phone" placeholder="+60 12 345 6789" required>
         </div>
 
         <div class="form-group">
-          <label>Number of Guests</label>
-          <input type="number" name="pax" placeholder="Including yourself" min="1" required>
+          <label>Number of Guests 出席人数</label>
+          <input type="number" name="pax" placeholder="Including yourself 请包含你自己" min="1" required>
         </div>
 
         <hr class="rsvp-divider">
 
         <div class="form-group">
-          <span class="attendance-label">I will attend</span>
+          <span class="attendance-label">I will attend 我会出席</span>
           <div class="checkbox-group">
             <label>
               <input type="checkbox" name="party18" value="Yes">
-              🥂 18 June — Evening Party
+              🥂 18 September (FRI)— Evening Party 派对
             </label>
             <label>
               <input type="checkbox" name="dinner19" value="Yes">
-              💍 19 June — Wedding Dinner
+              💍 19 September (SAT)— Wedding Dinner 晚宴
             </label>
           </div>
         </div>
 
-        <button type="submit" class="submit-btn">Confirm Attendance</button>
+        <button type="submit" class="submit-btn">Confirm Attendance 确认出席</button>
 
         <div class="success-msg" id="successMsg">
-          💌 &nbsp; Thank you! We can't wait to celebrate with you.
+          💌 &nbsp; Thank you! We can't wait to celebrate with you.<br> 谢谢！让我们一起见证幸福时刻。
         </div>
-
       </form>
     </div>
   </div>
@@ -772,8 +1054,17 @@
 <footer class="footer">
   <div class="footer-hearts">♥ &nbsp; ♥ &nbsp; ♥</div>
   <p class="footer-names">Shan Wen & Yung Ning</p>
-  <p class="footer-text">With all our love &nbsp;·&nbsp; 19 June 2026</p>
+  <p class="footer-text">With all our love <br>今朝同心，唯愿与你共赴这场欢喜。 <br>&nbsp;·&nbsp; 18 & 19 September 2026 -`♡´-</p>
 </footer>
+
+<!-- ── LIGHTBOX OVERLAY HTML ── -->
+<div id="lightboxModal" class="lightbox-overlay">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <div class="lightbox-container" id="lightboxContainer">
+    <img id="lightboxImg" class="lightbox-img" src="" alt="Enlarged Invitation Card">
+  </div>
+  <div class="zoom-hint">双击或双指捏合可放大/缩小查看详情</div>
+</div>
 
 <script>
 /* ── Falling petals ── */
@@ -840,62 +1131,255 @@ document.getElementById('rsvpForm').addEventListener('submit', async(e)=>{
 });
 </script>
 
-<!-- Audio Element with Direct Google Drive Download URL -->
-    <audio id="bgm" loop autoplay>
-        <source src="wedding.mp3" type="audio/mpeg">
-    </audio>
+<!-- Background music -->
+<audio id="bgm" loop autoplay>
+    <source src="wedding.mp3" type="audio/mpeg">
+</audio>
 
-    <!-- Control Button -->
-    <button id="musicToggle" class="music-btn">🎵 Music: Playing</button>
+<!-- Control Button -->
+<button id="musicToggle" class="music-btn">🎵 Music: Playing</button>
 
-    <script>
-        const audio = document.getElementById('bgm');
-        const toggleBtn = document.getElementById('musicToggle');
+<script>
+    const audio = document.getElementById('bgm');
+    const toggleBtn = document.getElementById('musicToggle');
 
-        // Function to update the button text based on state
-        function updateButton() {
-            if (audio.paused) {
-                toggleBtn.textContent = "🔇 Music: Paused";
-            } else {
-                toggleBtn.textContent = "🎵 Music: Playing";
-            }
+    function updateButton() {
+        if (audio.paused) {
+            toggleBtn.textContent = "🔇 Music: Paused";
+        } else {
+            toggleBtn.textContent = "🎵 Music: Playing";
         }
+    }
 
-        // Attempt autoplay immediately on load
-        window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', () => {
+        audio.play().then(() => {
+            updateButton();
+        }).catch(error => {
+            toggleBtn.textContent = "🔇 Click to Play Music";
+        });
+    });
+
+    toggleBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+        } else {
+            audio.pause();
+        }
+        updateButton();
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target !== toggleBtn && audio.paused) {
             audio.play().then(() => {
                 updateButton();
-            }).catch(error => {
-                // Autoplay blocked by browser (very common)
-                toggleBtn.textContent = "🔇 Click to Play Music";
-            });
-        });
+            }).catch(() => {});
+        }
+    }, { once: true });
+</script>
 
-        // Toggle music on button click
-        toggleBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-            } else {
-                audio.pause();
-            }
-            updateButton();
-        });
+<!-- MAP MODAL -->
+<div id="mapModal" class="map-modal">
+    <div class="map-modal-content">
+        <button class="map-close" onclick="closeMapModal()">✕</button>
+        <div class="map-header">
+            <div class="map-icon">📍</div>
+            <h3>Wedding Venue</h3>
+            <p>Hee Lai Ton Restaurant 喜来登, Serdang</p> 
+        </div>
+        <div class="map-buttons">
+            <a href="https://maps.google.com/?q=Hee+Lai+Ton+Restaurant+Serdang" target="_blank" rel="noopener" class="map-btn google">
+                <img src="map.png" alt="" class="map-btn-icon">
+                <div><strong>Google Maps</strong><small>Open Navigation</small></div>
+            </a>
+            <a href="https://waze.com/ul?q=Hee+Lai+Ton+Restaurant+Serdang&navigate=yes" target="_blank" rel="noopener" class="map-btn waze">
+                <img src="waze.png" alt="" class="map-btn-icon">
+                <div><strong>Waze</strong><small>Drive with Waze</small></div>
+            </a>
+            <a href="https://maps.apple.com/?q=Hee+Lai+Ton+Restaurant+Serdang" target="_blank" rel="noopener" class="map-btn apple">
+                <img src="apple.png" alt="" class="map-btn-icon">
+                <div><strong>Apple Maps</strong><small>Open on iPhone</small></div>
+            </a>
+        </div>
+    </div>
+</div>
 
-        // Fallback: If user clicks anywhere else on the page, try to start autoplay
-        window.addEventListener('click', (e) => {
-            // Prevent triggering if they specifically clicked the toggle button
-            if (e.target !== toggleBtn && audio.paused) {
-                audio.play().then(() => {
-                    updateButton();
-                }).catch(() => {});
-            }
-        }, { once: true }); // Only runs once on the first interaction
-    </script>
+<script>
+function openMapModal() {
+    document.getElementById('mapModal').classList.add('show');
+}
+function closeMapModal() {
+    document.getElementById('mapModal').classList.remove('remove'); // Fix legacy potential issue
+    document.getElementById('mapModal').classList.remove('show');
+}
+document.getElementById('mapModal').addEventListener('click', function(e){
+    if(e.target === this){ closeMapModal(); }
+});
+document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape'){ closeMapModal(); closeLightbox(); }
+});
+</script>
 
+<!-- ── LIGHTBOX / ZOOM JAVASCRIPT ── -->
+<script>
+const lightbox = document.getElementById('lightboxModal');
+const lightboxImg = document.getElementById('lightboxImg');
+const zoomHint = document.querySelector('.zoom-hint');
 
+let scale = 1;
+let isZoomed = false;
+
+// 拖拽与手势变量
+let isDragging = false;
+let startX = 0, startY = 0;
+let translateX = 0, translateY = 0;
+let lastTranslateX = 0, lastTranslateY = 0;
+
+// 手机端双指缩放变量
+let touchStartDist = 0;
+let initialScale = 1;
+
+function openLightbox(src) {
+    lightboxImg.src = src;
+    lightbox.classList.add('show');
+    document.body.style.overflow = 'hidden'; // 阻止页面背景滚动
+    resetZoom();
+    
+    // 根据设备微调提示文字
+    if ('ontouchstart' in window) {
+        zoomHint.textContent = "双击或双指捏合可放大查看详情";
+    } else {
+        zoomHint.textContent = "双击图片放大，鼠标拖拽平移";
+    }
+}
+
+function closeLightbox() {
+    lightbox.classList.remove('show');
+    document.body.style.overflow = ''; 
+    setTimeout(resetZoom, 300);
+}
+
+function resetZoom() {
+    scale = 1;
+    isZoomed = false;
+    translateX = 0;
+    translateY = 0;
+    lastTranslateX = 0;
+    lastTranslateY = 0;
+    lightboxImg.style.transform = 'none';
+    lightboxImg.classList.remove('zoomed');
+}
+
+// ── 智能缩放控制（不再一触即发） ──
+// 单击遮罩层或图片：如果是常态则不放大，仅在双击时响应
+lightbox.addEventListener('click', function(e) {
+    if (e.target !== lightboxImg) {
+        closeLightbox();
+    }
+});
+
+// 双击事件：温和地放大 1.5 倍
+lightboxImg.addEventListener('dblclick', function(e) {
+    e.stopPropagation();
+    toggleZoom(e);
+});
+
+function toggleZoom(e) {
+    if (!isZoomed) {
+        scale = 1.5; // 1.5倍是看清字最舒适的倍数，不会突兀
+        isZoomed = true;
+        lightboxImg.classList.add('zoomed');
+    } else {
+        resetZoom();
+    }
+    updateTransform();
+}
+
+function updateTransform() {
+    // 限制拖拽边界，防止图片飞出屏幕外
+    lightboxImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+}
+
+// ── PC端与移动端通用拖拽/单指平移 ──
+function startDrag(e) {
+    if (!isZoomed && scale <= 1) return; 
+    isDragging = true;
+    
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    
+    startX = clientX - lastTranslateX;
+    startY = clientY - lastTranslateY;
+    
+    if (e.touches && e.touches.length === 2) {
+        // 如果是双指，记录初始距离用于捏合缩放
+        touchStartDist = getTouchDist(e.touches);
+        initialScale = scale;
+    }
+    
+    if (!e.touches) e.preventDefault();
+}
+
+function dragMove(e) {
+    if (!isDragging) return;
+
+    // 移动端双指捏合缩放处理
+    if (e.touches && e.touches.length === 2) {
+        e.preventDefault();
+        const dist = getTouchDist(e.touches);
+        scale = (dist / touchStartDist) * initialScale;
+        // 限制缩放范围在 1 到 3 倍之间
+        if (scale < 1) scale = 1;
+        if (scale > 3) scale = 3;
+        isZoomed = scale > 1;
+        if (isZoomed) lightboxImg.classList.add('zoomed');
+        else lightboxImg.classList.remove('zoomed');
+        updateTransform();
+        return;
+    }
+
+    // 单指或鼠标拖拽平移
+    if (isZoomed || scale > 1) {
+        if (e.cancelable) e.preventDefault();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        translateX = clientX - startX;
+        translateY = clientY - startY;
+        updateTransform();
+    }
+}
+
+function endDrag() {
+    if (!isDragging) return;
+    isDragging = false;
+    lastTranslateX = translateX;
+    lastTranslateY = translateY;
+}
+
+function getTouchDist(touches) {
+    return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+}
+
+// 绑定事件
+lightboxImg.addEventListener('mousedown', startDrag);
+window.addEventListener('mousemove', dragMove);
+window.addEventListener('mouseup', endDrag);
+
+lightboxImg.addEventListener('touchstart', startDrag, { passive: false });
+window.addEventListener('touchmove', dragMove, { passive: false });
+window.addEventListener('touchend', endDrag);
+
+// 手机端双击兼容（部分老旧浏览器不触发 dblclick）
+let lastTap = 0;
+lightboxImg.addEventListener('touchend', function (e) {
+    let currentTime = new Date().getTime();
+    let tapLength = currentTime - lastTap;
+    if (tapLength < 300 && tapLength > 0) {
+        toggleZoom(e);
+        e.preventDefault();
+    }
+    lastTap = currentTime;
+});
+</script>
 </body>
-
-
-
-
 </html>
